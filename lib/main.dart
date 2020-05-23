@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:form_validator/pages/home_page.dart';
-import 'package:form_validator/pages/login.dart';
+import 'package:form_validator/src/pages/home_page.dart';
+import 'package:form_validator/src/pages/login.dart';
 
 void main() => runApp(MyApp());
 
