@@ -107,7 +107,7 @@ class LoginPage extends StatelessWidget {
                 SizedBox(
                   height: 60.0,
                 ),
-                _crearBoton()
+                _crearBoton(bloc)
               ],
             ),
           ),
@@ -152,7 +152,6 @@ class LoginPage extends StatelessWidget {
               decoration: InputDecoration(
                   icon: Icon(Icons.lock_outline, color: Colors.deepPurple),
                   labelText: 'Contraseña',
-                  counterText: snapshot.data,
                   errorText: snapshot.error),
               onChanged: bloc.changePassword,
             ));
@@ -160,17 +159,27 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _crearBoton() {
-    return RaisedButton(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-        child: Text('Ingresar'),
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-      onPressed: () {},
-      elevation: 0.0,
-      color: Colors.deepPurple,
-      textColor: Colors.white,
+  Widget _crearBoton(LoginBloc bloc) {
+    return StreamBuilder(
+      stream: bloc.formValidStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return AnimatedContainer(
+          duration: Duration(milliseconds: 1000),
+          curve: Curves.linear,
+          child: RaisedButton(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
+              child: Text('Ingresar'),
+            ),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0)),
+            onPressed: snapshot.hasData ? () {} : null,
+            elevation: 0.0,
+            color: Colors.deepPurple,
+            textColor: Colors.white,
+          ),
+        );
+      },
     );
   }
 }
