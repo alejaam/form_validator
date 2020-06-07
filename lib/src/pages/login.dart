@@ -173,7 +173,7 @@ class LoginPage extends StatelessWidget {
             ),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0)),
-            onPressed: snapshot.hasData ? () {} : null,
+            onPressed: snapshot.hasData ? () => _login(bloc, context) : null,
             elevation: 0.0,
             color: Colors.deepPurple,
             textColor: Colors.white,
@@ -181,5 +181,14 @@ class LoginPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  _login(LoginBloc bloc, BuildContext context) {
+    print("=====================");
+    print("Email: ${bloc.email}");
+    print("Pasword: ${bloc.password}");
+    print("=====================");
+
+    Navigator.pushReplacementNamed(context, 'home');
   }
 }
