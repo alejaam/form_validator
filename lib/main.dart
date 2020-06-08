@@ -4,6 +4,7 @@ import 'package:form_validator/src/bloc/provider.dart';
 
 import 'package:form_validator/src/pages/home_page.dart';
 import 'package:form_validator/src/pages/login.dart';
+import 'package:form_validator/src/pages/producto_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,14 +15,13 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Material App',
-        initialRoute: 'login',
+        initialRoute: 'home',
         routes: {
           'login': (BuildContext context) => LoginPage(),
-          'home': (BuildContext context) => HomePage()
+          'home': (BuildContext context) => HomePage(),
+          'producto': (BuildContext context) => ProductoPage(),
         },
-        theme: ThemeData(
-          primaryColor: Colors.deepPurple
-        ),
+        theme: ThemeData(primaryColor: Colors.deepPurple),
       ),
     );
   }
