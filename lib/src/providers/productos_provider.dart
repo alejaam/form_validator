@@ -16,6 +16,16 @@ class ProductosProvider {
     return true;
   }
 
+  Future<bool> editarProducto(ProductoModel producto) async {
+    final url = '$_url/productos/${producto.id}.json';
+    final resp = await http.put(url, body: productoModelToJson(producto));
+    final decodeData = json.decode(resp.body);
+
+    print(decodeData);
+
+    return true;
+  }
+
   Future<List<ProductoModel>> cargarProductos() async {
     final String url = '$_url/productos.json';
     final resp = await http.get(url);
@@ -33,5 +43,14 @@ class ProductosProvider {
 
     print(productos);
     return productos;
+  }
+
+  Future<int> borrarProducto(String id) async {
+    final url = '$_url/productos/$id.json';
+    final resp = await http.delete(url);
+
+    print(json.decode(resp.body));
+
+    return 1;
   }
 }
