@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:form_validator/src/models/producto_model.dart';
 import 'package:form_validator/src/providers/productos_provider.dart';
@@ -10,8 +12,10 @@ class ProductoPage extends StatefulWidget {
 
 class _ProductoPageState extends State<ProductoPage> {
   final formKey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   final productosProvider = new ProductosProvider();
   ProductoModel producto = new ProductoModel();
+  bool _guardando = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +24,7 @@ class _ProductoPageState extends State<ProductoPage> {
       producto = prodArg;
     }
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text("Producto"),
         actions: <Widget>[
@@ -91,7 +96,7 @@ class _ProductoPageState extends State<ProductoPage> {
   Widget _crearBoton() {
     return RaisedButton.icon(
       icon: Icon(Icons.save),
-      onPressed: _submit,
+      onPressed: (_guardando) ? null : _submit,
       label: Text('Guardar'),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       color: Colors.deepPurple,
@@ -112,14 +117,30 @@ class _ProductoPageState extends State<ProductoPage> {
   void _submit() {
     if (!formKey.currentState.validate()) return;
     formKey.currentState.save();
-    print('Todo OK!');
-    print(producto.titulo);
-    print(producto.valor);
-    print(producto.disponible);
+    _guardando = true;
+
+    setState(() {
+      _guardando = true;
+    });
+
     if (producto.id == null) {
       productosProvider.crearProducto(producto);
     } else {
       productosProvider.editarProducto(producto);
     }
+
+    Timer(Duration(milliseconds: 1500), (){
+      setState(() {
+      _guardando = false;
+    });
+    });
+    mostrarSnackbar('Registro guardado');
+  }
+
+  void mostrarSnackbar(String mensaje) {
+    final snackbar = SnackBar(
+        content: Text(mensaje), duration: Duration(milliseconds: 1500),action: SnackBarAction(label: 'Volver', onPressed: () => Navigator.pop(context, 'home');),);
+
+    scaffoldKey.currentState.showSnackBar(snackbar);
   }
 }
