@@ -45,16 +45,38 @@ class HomePage extends StatelessWidget {
 
   Widget _crearItem(BuildContext context, ProductoModel producto) {
     return Dismissible(
-      key: UniqueKey(),
-      onDismissed: (direccion){
-        productosProvider.borrarProducto(producto.id);
-      },
-      background: Container(color: Colors.red),
-      child: ListTile(
-        title: Text('${producto.titulo} - ${producto.valor}'),
-        subtitle: Text(producto.id),
-        onTap: () => Navigator.pushNamed(context, 'producto', arguments: producto),
-      ),
-    );
+        key: UniqueKey(),
+        onDismissed: (direccion) {
+          productosProvider.borrarProducto(producto.id);
+        },
+        background: Container(color: Colors.red),
+        child: Card(
+          margin: EdgeInsets.all(20.0),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          child: Column(
+            children: <Widget>[
+              (producto.fotoUrl == null)
+                  ? Image(image: AssetImage('assets/no-image.png'))
+                  : ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15.0),
+                          topRight: Radius.circular(15.0)),
+                      child: FadeInImage(
+                          placeholder: AssetImage('assets/jar-loading.gif'),
+                          height: 300.0,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          image: NetworkImage(producto.fotoUrl)),
+                    ),
+              ListTile(
+                title: Text('${producto.titulo} - ${producto.valor}'),
+                subtitle: Text(producto.id),
+                onTap: () => Navigator.pushNamed(context, 'producto',
+                    arguments: producto),
+              ),
+            ],
+          ),
+        ));
   }
 }

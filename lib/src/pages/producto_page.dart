@@ -120,7 +120,7 @@ class _ProductoPageState extends State<ProductoPage> {
             }));
   }
 
-  void _submit() {
+  void _submit() async {
     if (!formKey.currentState.validate()) return;
     formKey.currentState.save();
     _guardando = true;
@@ -128,6 +128,10 @@ class _ProductoPageState extends State<ProductoPage> {
     setState(() {
       _guardando = true;
     });
+
+    if (foto != null) {
+      producto.fotoUrl = await productosProvider.subirImagen(foto);
+    }
 
     if (producto.id == null) {
       productosProvider.crearProducto(producto);
@@ -153,16 +157,35 @@ class _ProductoPageState extends State<ProductoPage> {
     scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
+  // _mostrarFoto() {
+  //   if (producto.fotoUrl != null) {
+  //     // TODO: tengo que hacer esto
+  //     return Container();
+  //   } else {
+  //     return Image(
+  //       image: AssetImage(foto?.path ?? 'assets/no-image.png'),
+  //       height: 300.0,
+  //       fit: BoxFit.cover,
+  //     );
+  //   }
+  // }
+
   _mostrarFoto() {
     if (producto.fotoUrl != null) {
-      // TODO: tengo que hacer esto
-      return Container();
+      return FadeInImage(
+          image: NetworkImage(producto.fotoUrl),
+          placeholder: AssetImage('assets/jar-loading.gif'),
+          height: 300.0,
+          fit: BoxFit.cover);
     } else {
-      return Image(
-        image: AssetImage(foto?.path ?? 'assets/no-image.png'),
-        height: 300.0,
-        fit: BoxFit.cover,
-      );
+      if (foto != null) {
+        return Image.file(
+          foto,
+          fit: BoxFit.cover,
+          height: 300.0,
+        );
+      }
+      return Image.asset('assets/no-image.png');
     }
   }
 
@@ -178,7 +201,7 @@ class _ProductoPageState extends State<ProductoPage> {
     final imagen = await _picker.getImage(source: origen);
 
     if (imagen != null) {
-      print("limpieza");
+      producto.fotoUrl = null;
     }
 
     setState(() {
