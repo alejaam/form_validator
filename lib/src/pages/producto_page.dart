@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:form_validator/src/models/producto_model.dart';
 import 'package:form_validator/src/providers/productos_provider.dart';
 import 'package:form_validator/src/utils/utils.dart' as utils;
+import 'package:image_picker/image_picker.dart';
 
 class ProductoPage extends StatefulWidget {
   @override
@@ -16,6 +18,8 @@ class _ProductoPageState extends State<ProductoPage> {
   final productosProvider = new ProductosProvider();
   ProductoModel producto = new ProductoModel();
   bool _guardando = false;
+  final ImagePicker _picker = ImagePicker();
+  File foto;
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +34,11 @@ class _ProductoPageState extends State<ProductoPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.photo_size_select_actual),
-            onPressed: () {},
+            onPressed: _seleccionarFoto,
           ),
           IconButton(
             icon: Icon(Icons.camera_alt),
-            onPressed: () {},
+            onPressed: _tomarFoto,
           )
         ],
       ),
@@ -45,6 +49,8 @@ class _ProductoPageState extends State<ProductoPage> {
               key: formKey,
               child: Column(
                 children: <Widget>[
+                  _mostrarFoto(),
+                  Divider(),
                   _crearNombre(),
                   Divider(),
                   _crearPrecio(),
@@ -129,18 +135,54 @@ class _ProductoPageState extends State<ProductoPage> {
       productosProvider.editarProducto(producto);
     }
 
-    Timer(Duration(milliseconds: 1500), (){
+    Timer(Duration(milliseconds: 1500), () {
       setState(() {
-      _guardando = false;
-    });
+        _guardando = false;
+      });
     });
     mostrarSnackbar('Registro guardado');
   }
 
   void mostrarSnackbar(String mensaje) {
     final snackbar = SnackBar(
-        content: Text(mensaje), duration: Duration(milliseconds: 1500),action: SnackBarAction(label: 'Volver', onPressed: () => Navigator.pop(context, 'home');),);
-
+      content: Text(mensaje),
+      duration: Duration(milliseconds: 1500),
+      action: SnackBarAction(
+          label: 'Volver', onPressed: () => Navigator.pop(context, 'home')),
+    );
     scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  _mostrarFoto() {
+    if (producto.fotoUrl != null) {
+      // TODO: tengo que hacer esto
+      return Container();
+    } else {
+      return Image(
+        image: AssetImage(foto?.path ?? 'assets/no-image.png'),
+        height: 300.0,
+        fit: BoxFit.cover,
+      );
+    }
+  }
+
+  void _seleccionarFoto() async {
+    _procesarImagen(ImageSource.gallery);
+  }
+
+  void _tomarFoto() async {
+    _procesarImagen(ImageSource.camera);
+  }
+
+  _procesarImagen(ImageSource origen) async {
+    final imagen = await _picker.getImage(source: origen);
+
+    if (imagen != null) {
+      print("limpieza");
+    }
+
+    setState(() {
+      foto = File(imagen?.path ?? 'assets/no-image.png');
+    });
   }
 }
