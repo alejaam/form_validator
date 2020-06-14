@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_validator/src/bloc/provider.dart';
 import 'package:form_validator/src/providers/usuario_provider.dart';
+import 'package:form_validator/src/utils/utils.dart';
 
 class LoginPage extends StatelessWidget {
   final usuarioProvider = new UsuarioProvider();
@@ -112,7 +113,10 @@ class LoginPage extends StatelessWidget {
               ],
             ),
           ),
-          FlatButton(onPressed: () => Navigator.pushReplacementNamed(context, 'registro'), child: Text('Crear una nueva cuenta')),
+          FlatButton(
+              onPressed: () =>
+                  Navigator.pushReplacementNamed(context, 'registro'),
+              child: Text('Crear una nueva cuenta')),
           SizedBox(
             height: 100.0,
           )
@@ -184,8 +188,13 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _login(LoginBloc bloc, BuildContext context) {
-    usuarioProvider.login(bloc.email, bloc.password);
-    // Navigator.pushReplacementNamed(context, 'home');
+  _login(LoginBloc bloc, BuildContext context) async {
+    Map info = await usuarioProvider.login(bloc.email, bloc.password);
+
+    if (info['ok']) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      mostrarAlerta(context, 'Correo y/o Contraseña incorrecta');
+    }
   }
 }
