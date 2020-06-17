@@ -13,7 +13,7 @@ class ProductosProvider {
   final _prefs = new PreferenciasUsuario();
 
   Future<bool> crearProducto(ProductoModel producto) async {
-    final url = '$_url/productos.json';
+    final url = '$_url/productos.json?auth=${_prefs.token}';
     final resp = await http.post(url, body: productoModelToJson(producto));
     final decodeData = json.decode(resp.body);
 
@@ -38,8 +38,10 @@ class ProductosProvider {
 
     final Map<String, dynamic> decodeData = json.decode(resp.body);
     final List<ProductoModel> productos = new List();
+    
     if (decodeData == null) return [];
-
+    if (decodeData['error'] != null) return [];
+    
     decodeData.forEach((id, prod) {
       final prodTemp = ProductoModel.fromJson(prod);
       prodTemp.id = id;
